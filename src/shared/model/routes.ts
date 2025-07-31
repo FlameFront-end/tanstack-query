@@ -10,6 +10,7 @@ type ExtractRouteParams<T extends string> = string extends T
 
 export const ROUTES = {
 	HOME: '/',
+	LOGIN: '/login',
 	TODOS: '/todos',
 	TODO: '/todos/:todoId'
 } as const

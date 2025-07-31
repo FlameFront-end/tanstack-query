@@ -14,13 +14,14 @@ import {
 	ErrorCode,
 	isErrorCode
 } from '@/shared/types'
+import { ROUTES } from '@/shared/model/routes'
 
 type AxiosErrorWithCode = AxiosError & { code?: ErrorCode }
 
 const defaultErrorConfig: ErrorHandlingConfig = {
 	showToast: true,
 	logToConsole: !APP_CONFIG.isProduction,
-	redirectOnAuthError: '/login'
+	redirectOnAuthError: ROUTES.LOGIN
 }
 
 export const apiClient: AxiosInstance = axios.create({
