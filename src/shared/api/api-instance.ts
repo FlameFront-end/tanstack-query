@@ -10,10 +10,12 @@ import {
 	ApiError,
 	ErrorHandlingConfig,
 	NetworkError,
-	isApiError
+	isApiError,
+	ErrorCode,
+	isErrorCode
 } from '@/shared/types'
 
-type AxiosErrorWithCode = AxiosError & { code?: string }
+type AxiosErrorWithCode = AxiosError & { code?: ErrorCode }
 
 const defaultErrorConfig: ErrorHandlingConfig = {
 	showToast: true,
@@ -41,30 +43,36 @@ apiClient.interceptors.response.use(
 		if (error.code === 'ERR_CANCELED') return Promise.reject(error)
 
 		const resData = error.response?.data as
-			| Record<string, string>
+			| Record<string, unknown>
 			| undefined
+
+		const {
+			code: rawCode,
+			message: rawMessage,
+			details,
+			timestamp
+		} = resData ?? {}
 
 		const apiError: ApiError = {
 			status: error.response?.status || 500,
-			code:
-				typeof resData?.code === 'string' ? resData.code : 'API_ERROR',
+			code: isErrorCode(rawCode) ? rawCode : 'UNKNOWN_ERROR',
 			message:
-				typeof resData?.message === 'string'
-					? resData.message
-					: error.message,
-			details:
-				typeof resData?.details === 'object'
-					? resData.details
-					: undefined,
-			timestamp:
-				typeof resData?.timestamp === 'string'
-					? resData.timestamp
-					: undefined
+				typeof rawMessage === 'string' ? rawMessage : error.message,
+			details: isRecord(details) ? details : undefined,
+			timestamp: typeof timestamp === 'string' ? timestamp : undefined
 		}
 
 		return Promise.reject(apiError)
 	}
 )
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return (
+		value !== null &&
+		typeof value === 'object' &&
+		Object.keys(value).length > 0
+	)
+}
 
 function handleApiError(
 	error: unknown,
