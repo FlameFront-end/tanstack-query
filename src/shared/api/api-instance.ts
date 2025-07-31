@@ -4,7 +4,7 @@ import axios, {
 	AxiosRequestConfig,
 	AxiosResponse
 } from 'axios'
-import { appConfig } from '@/shared/model/config'
+import { APP_CONFIG } from '@/shared/model/config'
 import { toast } from 'react-toastify'
 import {
 	ApiError,
@@ -17,13 +17,13 @@ type AxiosErrorWithCode = AxiosError & { code?: string }
 
 const defaultErrorConfig: ErrorHandlingConfig = {
 	showToast: true,
-	logToConsole: !appConfig.isProduction,
+	logToConsole: !APP_CONFIG.isProduction,
 	redirectOnAuthError: '/login'
 }
 
 export const apiClient: AxiosInstance = axios.create({
-	baseURL: appConfig.api.baseUrl,
-	timeout: appConfig.api.timeout,
+	baseURL: APP_CONFIG.api.baseUrl,
+	timeout: APP_CONFIG.api.timeout,
 	headers: {
 		'Content-Type': 'application/json'
 	}
@@ -40,7 +40,9 @@ apiClient.interceptors.response.use(
 	(error: AxiosErrorWithCode) => {
 		if (error.code === 'ERR_CANCELED') return Promise.reject(error)
 
-		const resData = error.response?.data as Record<string, any> | undefined
+		const resData = error.response?.data as
+			| Record<string, string>
+			| undefined
 
 		const apiError: ApiError = {
 			status: error.response?.status || 500,

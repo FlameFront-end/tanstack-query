@@ -1,4 +1,6 @@
-export type ApiError<T extends Record<string, unknown> = {}> = {
+export type ApiError<
+	T extends Record<string, unknown> = Record<string, unknown>
+> = {
 	status: number
 	code: string
 	message: string

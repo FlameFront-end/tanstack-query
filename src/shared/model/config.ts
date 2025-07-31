@@ -17,7 +17,7 @@ const API_DEFAULT_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT ?? 30_000)
 const API_ENABLE_MOCKS =
 	import.meta.env.VITE_API_MOCKS?.toLowerCase() === 'true'
 
-export const appConfig = {
+export const APP_CONFIG = {
 	isDevelopment,
 	isProduction,
 	isTest,
