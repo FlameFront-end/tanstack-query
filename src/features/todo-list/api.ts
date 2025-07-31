@@ -14,15 +14,20 @@ const fetchTodoList = (
 	{ page, perPage = DEFAULT_PER_PAGE }: PaginatedParams,
 	{ signal }: ApiRequestOptions = {}
 ): Promise<PaginatedResult<TodoDto>> => {
-	return apiRequest<PaginatedResult<TodoDto>>({
-		method: 'get',
-		url: '/tasks',
-		signal,
-		params: {
-			_page: page,
-			_per_page: perPage
+	return apiRequest<PaginatedResult<TodoDto>>(
+		{
+			method: 'get',
+			url: '/tasks',
+			signal,
+			params: {
+				_page: page,
+				_per_page: perPage
+			}
+		},
+		{
+			customMessage: 'Не удалось загрузить список задач'
 		}
-	})
+	)
 }
 
 export const todoListApi = {

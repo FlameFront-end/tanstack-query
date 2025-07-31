@@ -42,6 +42,7 @@ export type ErrorHandlingConfig = {
 	showToast?: boolean
 	logToConsole?: boolean
 	redirectOnAuthError?: string
+	customMessage?: string
 }
 
 export type NetworkError = {

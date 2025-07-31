@@ -80,6 +80,7 @@ function handleApiError(
 	config: ErrorHandlingConfig = {}
 ): never {
 	const merged = { ...defaultErrorConfig, ...config }
+	const customMsg = merged.customMessage
 
 	if (axios.isAxiosError(error)) {
 		if (error.code === 'ERR_CANCELED') throw error
@@ -87,11 +88,12 @@ function handleApiError(
 		if (!error.response) {
 			if (merged.logToConsole)
 				console.error('Network Error:', error.message)
-			if (merged.showToast) toast.error('Network error')
+
+			if (merged.showToast) toast.error(customMsg || 'Network error')
 
 			throw <NetworkError>{
 				isNetworkError: true,
-				message: 'Network error',
+				message: customMsg || 'Network error',
 				originalError: error
 			}
 		}
@@ -100,22 +102,27 @@ function handleApiError(
 	if (isApiError(error)) {
 		if (merged.logToConsole)
 			console.error(`API Error [${error.code}]:`, error.message)
-		if (merged.showToast) toast.error(error.message)
+
+		if (merged.showToast) toast.error(customMsg || error.message)
 
 		if (error.code === 'UNAUTHORIZED' && merged.redirectOnAuthError) {
 			window.location.href = merged.redirectOnAuthError
 		}
 
-		throw error
+		throw {
+			...error,
+			message: customMsg || error.message // Чтобы можно было перехватить и использовать
+		}
 	}
 
 	if (merged.logToConsole) console.error('Unknown error:', error)
-	if (merged.showToast) toast.error('Unknown error')
+
+	if (merged.showToast) toast.error(customMsg || 'Unknown error')
 
 	throw <ApiError>{
 		status: 500,
 		code: 'UNKNOWN_ERROR',
-		message: 'Unknown error occurred'
+		message: customMsg || 'Unknown error occurred'
 	}
 }
 
