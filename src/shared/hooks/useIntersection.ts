@@ -23,3 +23,4 @@ export const useIntersection = (onIntersect: () => void) => {
 		[onIntersect]
 	)
 }
+

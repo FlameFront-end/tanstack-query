@@ -31,8 +31,6 @@ const fetchTodoList = (
 }
 
 export const todoListApi = {
-	getTodoList: fetchTodoList,
-
 	getTodoListInfiniteQueryOptions: () =>
 		infiniteQueryOptions({
 			queryKey: ['tasks', 'list'],
@@ -43,8 +41,10 @@ export const todoListApi = {
 			select: data => data.pages.flatMap(page => page.data)
 		}),
 
-	getTodoListQueryOptions: (params: PaginatedParams) => {
-		const { page, perPage = DEFAULT_PER_PAGE } = params
+	getTodoListQueryOptions: ({
+		page,
+		perPage = DEFAULT_PER_PAGE
+	}: PaginatedParams) => {
 		return queryOptions<PaginatedResult<TodoDto>, Error>({
 			queryKey: ['tasks', 'list', { page, perPage }],
 			queryFn: ({ signal }) =>

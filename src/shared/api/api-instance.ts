@@ -111,7 +111,7 @@ function handleApiError(
 
 		throw {
 			...error,
-			message: customMsg || error.message // Чтобы можно было перехватить и использовать
+			message: customMsg || error.message
 		}
 	}
 
